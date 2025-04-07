@@ -1,0 +1,40 @@
+Seed set to 42
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.model_summary.ModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: 834799106 to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: creating run
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in ./wandb/run-20250407_170206-l5dkcw3a
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run MLP
+wandb: ⭐️ View project at https://wandb.ai/834799106/SPH6004
+wandb: 🚀 View run at https://wandb.ai/834799106/SPH6004/runs/l5dkcw3a
+/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:654: Checkpoint directory /projects/group/bliu/e1373616/sph6004/Group_work/ckpt exists and is not empty.
+
+   | Name                   | Type               | Params | Mode 
+-----------------------------------------------------------------------
+0  | model                  | BaseModel          | 15.2 M | train
+1  | model.model            | Mlp                | 15.2 M | train
+2  | model.model.fc1        | Linear             | 7.6 M  | train
+3  | model.model.act        | GELU               | 0      | train
+4  | model.model.fc2        | Linear             | 7.6 M  | train
+5  | model.model.drop       | Dropout            | 0      | train
+6  | model.head             | SeparateClassifier | 17.9 K | train
+7  | model.head.classifiers | ModuleList         | 17.9 K | train
+8  | model.norm_layer       | LayerNorm          | 2.8 K  | train
+9  | loss_module            | BCEWithLogitsLoss  | 0      | train
+10 | aucmetric              | MultilabelAUROC    | 0      | train
+11 | multi_aucmetric        | MultilabelAUROC    | 0      | train
+12 | accmetric              | MultilabelAccuracy | 0      | train
+-----------------------------------------------------------------------
+15.2 M    Trainable params
+0         Non-trainable params
+15.2 M    Total params
+60.698    Total estimated model params size (MB)
+26        Modules in train mode
+0         Modules in eval mode
+/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/utilities/data.py:78: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 64. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/utilities/data.py:78: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 17. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
