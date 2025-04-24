@@ -1,0 +1,29 @@
+_base_: base.yaml
+dataset:
+  name: "MIMIC_Img_Dataset"
+  h5_file_path: 
+    train: "dataset/emb_train_data_v2.h5"
+    val: "dataset/emb_val_data_v2.h5"
+    test: "dataset/emb_test_data_v2.h5"
+  imgpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/files"
+  csvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-chexpert.csv.gz"
+  metacsvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-metadata.csv.gz"
+  splitcsvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-split.csv.gz"
+  img_h5_path:
+    train: "dataset/img_train_data.h5"
+    val: "dataset/img_val_data.h5"
+    test: "dataset/img_test_data.h5"
+
+
+model:
+  name: "vit_base_patch16_224.augreg_in21k" #"vit_base_patch8_224.augreg2_in21k_ft_in1k" #"vit_so400m_patch14_siglip_224.v2_webli" #
+  params:
+    outnorm: false
+    num_classes: 13
+
+train:
+  label_smoothing: 0.0
+  epochs: 50
+  use_mixup: false
+  
+          

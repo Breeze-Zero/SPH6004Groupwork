@@ -47,10 +47,75 @@ class MIMIC_Img_text_Dataset(Dataset):
     def __init__(
         self,
         embedpath,
+        img_h5_path,
+        textpath,
+        transforms = torchvision.transforms.Compose([
+            torchvision.transforms.Resize((224, 224)),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        ])
+    ):
+        super().__init__()
+        self.img_h5_path = img_h5_path
+        self.transforms = transforms
+        with h5py.File(embedpath, 'r') as hf:
+            ind = hf['X_text_tag'][:]
+            self.file_names = hf['file_name'][ind]
+            self.labels = hf['y'][ind]
+            self.labels[self.labels != 1] = 0
+        with h5py.File(textpath, 'r') as hf:
+            self.texts = hf['texts'][ind]
+        assert len(self.texts)==len(self.labels)
+
+        
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        sample = {}
+        sample["idx"] = idx
+        sample["label"] = torch.tensor(self.labels[idx],dtype=torch.int32)
+        sample['file_name'] = self.file_names[idx].decode('utf-8')
+        with h5py.File(self.img_h5_path, 'r') as hf:
+            sample["input"] = self.transforms(torchvision.transforms.ToPILImage()(hf['images'][idx]))
+
+        sample['input_text'] = self.texts[idx].decode('utf-8')
+        # sample['input_text'] = self.tokenizer(
+        #     texts,
+        #     return_tensors='pt',
+        #     max_length=self.context_length,
+        #     padding='max_length',
+        #     truncation=True,
+        # ).input_ids
+        return sample
+
+class MIMIC_Img_textemb_Dataset(Dataset):
+
+    pathologies = [
+        "Enlarged Cardiomediastinum",
+        "Cardiomegaly",
+        "Lung Opacity",
+        "Lung Lesion",
+        "Edema",
+        "Consolidation",
+        "Pneumonia",
+        "Atelectasis",
+        "Pneumothorax",
+        "Pleural Effusion",
+        "Pleural Other",
+        "Fracture",
+        "Support Devices",
+    ]
+
+    split_ratio = [0.8, 0.1, 0.1]
+
+    def __init__(
+        self,
+        embedpath,
         img_path,
         transforms = torchvision.transforms.Compose([
-            torchvision.transforms.Resize((256, 256)),
-            torchvision.transforms.CenterCrop(224),
+            torchvision.transforms.Resize((224, 224)),
+            # torchvision.transforms.CenterCrop(224),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
@@ -85,9 +150,10 @@ class MIMIC_Img_text_Dataset(Dataset):
 
 if __name__ == "__main__":
     embedpath = 'dataset/emb_test_data_v2.h5'
-    img_path = "../physionet.org/files/mimic-cxr-jpg/2.1.0/files"
+    img_path = "dataset/img_train_data.h5"
+    textpath = 'dataset/text_test_data.h5'
 
-    dataset = MIMIC_Img_text_Dataset(embedpath,img_path,transforms = torchvision.transforms.Compose([
+    dataset = MIMIC_Img_text_Dataset(embedpath,img_path,textpath,transforms = torchvision.transforms.Compose([
             torchvision.transforms.RandomResizedCrop(224, scale=(0.9, 1.0)),
             torchvision.transforms.RandomHorizontalFlip(),
             torchvision.transforms.RandomRotation(15),
@@ -95,5 +161,5 @@ if __name__ == "__main__":
             torchvision.transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ]))
     print(dataset[1000])
-    print(dataset[1000]["img"].shape)
-    print(dataset[1000]["text"].shape)
+    print(dataset[1000]["input"].shape)
+    # print(dataset[1000]["input_text"])

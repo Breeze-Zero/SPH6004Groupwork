@@ -1,0 +1,10 @@
+label_smoothing: 0.0
+lr: 5.0e-05
+model_hparams:
+  Classifier: Classifier
+  loss: bce
+  num_classes: 13
+  outnorm: false
+  pretrained: true
+model_name: VisionLSTM
+use_mixup: false

@@ -3,5 +3,11 @@ python train.py --config configs/mlp.yaml
 python train.py --config configs/resnet.yaml
 python train.py --config configs/efficientnet.yaml
 python train.py --config configs/vit.yaml
-python train.py --config configs/visionlstm.yaml
+python train.py --config configs/eva02.yaml
+python train.py --config configs/convnextv2.yaml
 python train.py --config configs/dinov2.yaml
+python train.py --config configs/visionlstm.yaml
+python train.py --config configs/ltvit.yaml
+python train.py --config configs/swin.yaml
+python train.py --config configs/resnet101.yaml
+python train.py --config configs/img_text_model.yaml

@@ -15,6 +15,8 @@ from models.create_model import create_model
 from torchvision.transforms import v2
 from lightning.pytorch.loggers import WandbLogger
 from sklearn.metrics import roc_auc_score
+from utils.load_config import load_config,print_config
+
 NUM_CLASSES = 13
 
 class TorchModule(pl.LightningModule):
@@ -32,9 +34,13 @@ class TorchModule(pl.LightningModule):
         # Exports the hyperparameters to a YAML file, and create "self.hparams" namespace
         self.save_hyperparameters()
         # Create model
-        self.model = create_model(model_name, **model_hparams) #torch.compile(create_model(model_name, **model_hparams))
+        self.model = create_model(model_name, **model_hparams)
         # Create loss module
-        self.loss_module = nn.BCEWithLogitsLoss()#BCEWithLogitsLoss(label_smoothing)
+        if model_hparams.get('loss')=='bce':
+            self.loss_module = BCEWithLogitsLoss(label_smoothing)
+        else:
+            self.loss_module = FocalLoss(alpha=0.5,gamma=1.5)#
+
         self.aucmetric = MultilabelAUROC(num_labels=NUM_CLASSES)
         self.multi_aucmetric = MultilabelAUROC(num_labels=NUM_CLASSES, average=None)
         self.accmetric = MultilabelAccuracy(num_labels=NUM_CLASSES)
@@ -75,8 +81,8 @@ class TorchModule(pl.LightningModule):
             optimizer,
             t_initial=self.trainer.max_epochs,
             cycle_mul=1.,
-            lr_min=1e-5,
-            warmup_lr_init=1e-5,
+            lr_min=1e-6,
+            warmup_lr_init=1e-6,
             warmup_t=10,
             cycle_limit=1,
             t_in_epochs=True,
@@ -177,7 +183,9 @@ class TorchModule(pl.LightningModule):
 
         all_preds = np.concatenate(self.test_preds, axis=0)
         all_labels = np.concatenate(self.test_labels, axis=0)
-        
+
+        np.savez(f"result/test_{self.hparams.model_name}.npz", preds=all_preds, labels=all_labels)
+
         try:
             overall_auc = roc_auc_score(all_labels, all_preds, average="macro")
         except ValueError as e:
@@ -195,15 +203,36 @@ class TorchModule(pl.LightningModule):
                 print(f"Error computing AUC for class {i}: {e}")
             self.log(f"{self.label_tag[i]}", auc_per_class)
 
+class FreezeBackboneOnPatienceCallback(pl.Callback):
+    def __init__(self, freeze_patience=5):
+        self.freeze_patience = freeze_patience
+        self.has_frozen = False
 
+    def on_validation_end(self, trainer, pl_module):
+        # 查找 EarlyStopping 回调实例
+        for callback in trainer.callbacks:
+            if isinstance(callback, pl.callbacks.EarlyStopping):
+                if not self.has_frozen and callback.wait_count >= self.freeze_patience:
+                    best_ckpt_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
+                    if best_ckpt_path and os.path.exists(best_ckpt_path):
+                        print(f"Loading best checkpoint from: {best_ckpt_path}")
+                        ckpt = torch.load(best_ckpt_path, map_location=pl_module.device)
+                        pl_module.load_state_dict(ckpt["state_dict"])
+                    # 冻结 backbone 参数
+                    for param in pl_module.model.model.parameters():
+                        param.requires_grad = False
+                    print(f"EarlyStopping 的 wait_count 达到 {callback.wait_count}，冻结 backbone 权重")
+                    self.has_frozen = True
+                break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Train with pytorch-lightning')
     parser.add_argument('--config',default='configs/config.yaml',type=str)
     args = parser.parse_args()
 
-    with open(args.config, 'r') as f:
-        config = yaml.safe_load(f)
+
+    config = load_config(args.config)
+    print_config(config)
 
     pl.seed_everything(42)
     NUM_WORKERS = config['dataloader']['num_workers']
@@ -213,9 +242,9 @@ if __name__ == '__main__':
     dataset_cfg = config['dataset']
     dataset_train, dataset_val, dataset_test = create_dataset(**dataset_cfg)
 
-    train_dataloader = DataLoader(dataset_train, batch_size=BATCH_SZIE, shuffle=True, num_workers=NUM_WORKERS,pin_memory=True)
-    val_dataloader = DataLoader(dataset_val, batch_size=BATCH_SZIE, shuffle=False, num_workers=NUM_WORKERS,pin_memory=True)
-    test_dataloader = DataLoader(dataset_test, batch_size=BATCH_SZIE, shuffle=False, num_workers=NUM_WORKERS,pin_memory=True)
+    train_dataloader = DataLoader(dataset_train, batch_size=BATCH_SZIE, shuffle=True, num_workers=NUM_WORKERS,pin_memory=True, prefetch_factor=4,persistent_workers=True)
+    val_dataloader = DataLoader(dataset_val, batch_size=BATCH_SZIE, shuffle=False, num_workers=NUM_WORKERS,pin_memory=True, prefetch_factor=2)
+    test_dataloader = DataLoader(dataset_test, batch_size=BATCH_SZIE, shuffle=False, num_workers=NUM_WORKERS,pin_memory=True, prefetch_factor=2)
 
     model = TorchModule(model_name, config['model']['params'], lr=config['optimizer']['lr'],label_smoothing=config['train']['label_smoothing'],use_mixup=config['train']['use_mixup'])
     best_checkpoint_callback = ModelCheckpoint(
@@ -232,7 +261,7 @@ if __name__ == '__main__':
         devices=1,
         num_sanity_val_steps=2,
         logger=WandbLogger(project="SPH6004",name=model_name),
-        callbacks=[LearningRateMonitor(logging_interval="step"),best_checkpoint_callback,ModelSummary(max_depth=3),EarlyStopping('val_auc',mode='max', patience=10)],
+        callbacks=[LearningRateMonitor(logging_interval="step"),best_checkpoint_callback,ModelSummary(max_depth=3),EarlyStopping('val_auc',mode='max', patience=10),FreezeBackboneOnPatienceCallback()],#
     )
 
     trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)

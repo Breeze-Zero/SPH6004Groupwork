@@ -1,0 +1,36 @@
+dataset:
+  name: "ImageEmbDataset"
+  h5_file_path: 
+    train: "dataset/emb_train_data.h5"
+    val: "dataset/emb_val_data.h5"
+    test: "dataset/emb_test_data.h5"
+  imgpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/files"
+  csvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-chexpert.csv.gz"
+  metacsvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-metadata.csv.gz"
+  splitcsvpath: "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-split.csv.gz"
+  img_h5_path:
+    train: "dataset/img_train_data.h5"
+    val: "dataset/img_val_data.h5"
+    test: "dataset/img_test_data.h5"
+
+dataloader:
+  batch_size: 64
+  num_workers: 16
+
+model:
+  name: "SwiGLUFFN"
+  params:
+    in_features: 1376
+    num_features: 1376
+    drop: 0.5
+    outnorm: true
+    num_classes: 13
+
+train:
+  label_smoothing: 0.0
+  epochs: 50
+  use_mixup: false
+  
+          
+optimizer:
+  lr: 0.00005

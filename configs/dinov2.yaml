@@ -1,3 +1,4 @@
+_base_: base.yaml
 dataset:
   name: "MIMIC_Img_Dataset"
   h5_file_path: 
@@ -12,21 +13,15 @@ dataset:
     train: "dataset/img_train_data.h5"
     val: "dataset/img_val_data.h5"
     test: "dataset/img_test_data.h5"
-dataloader:
-  batch_size: 64
-  num_workers: 16
+
 
 model:
-  name: "Dinov2"
+  name: "Dinov2_freeze"
   params:
     outnorm: false
     num_classes: 13
 
 train:
   label_smoothing: 0.0
-  epochs: 100
+  epochs: 50
   use_mixup: false
-  
-          
-optimizer:
-  lr: 0.0001

@@ -49,8 +49,8 @@ class MIMIC_Img_Dataset(Dataset):
         embedpath,
         img_h5_path,
         transforms = torchvision.transforms.Compose([
-            torchvision.transforms.Resize((256, 256)),
-            torchvision.transforms.CenterCrop(224),
+            torchvision.transforms.Resize((224, 224)),
+            # torchvision.transforms.CenterCrop(224),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
@@ -75,22 +75,14 @@ class MIMIC_Img_Dataset(Dataset):
         sample['file_name'] = self.file_names[idx].decode('utf-8')
         with h5py.File(self.img_h5_path, 'r') as hf:
             sample["input"] = self.transforms(torchvision.transforms.ToPILImage()(hf['images'][idx]))
-
-        # img_file = os.path.join(
-        #     self.img_path,
-        #     sample['file_name'] + ".jpg",
-        # )
-        # sample["input"] = self.transforms(load_img(img_file))
         
         return sample
 
 
 if __name__ == "__main__":
-    embedpath = "../physionet.org/files/mimic-cxr-jpg/2.1.0/files"
-    csvpath = "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-chexpert.csv.gz"
-    metacsvpath = "../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-metadata.csv.gz"
-    splitcsvpath = '../physionet.org/files/mimic-cxr-jpg/2.1.0/mimic-cxr-2.0.0-split.csv.gz'
-    dataset = MIMIC_Img_Dataset(embedpath,csvpath,metacsvpath,splitcsvpath,mode = "train",transforms = torchvision.transforms.Compose([
+    embedpath = "dataset/emb_train_data_v2.h5"
+    img_h5_path = "dataset/img_train_data.h5"
+    dataset = MIMIC_Img_Dataset(embedpath,img_h5_path,transforms = torchvision.transforms.Compose([
             torchvision.transforms.RandomResizedCrop(224, scale=(0.9, 1.0)),
             torchvision.transforms.RandomHorizontalFlip(),
             torchvision.transforms.RandomRotation(15),
@@ -98,4 +90,4 @@ if __name__ == "__main__":
             torchvision.transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ]))
     print(dataset[1000])
-    print(dataset[1000]["img"].shape)
+    print(dataset[1000]["input"].shape)

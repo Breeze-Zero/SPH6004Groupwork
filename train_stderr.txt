@@ -1,0 +1,49 @@
+Seed set to 42
+Using 16bit Automatic Mixed Precision (AMP)
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.model_summary.ModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA A100-SXM4-40GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: 834799106 to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.9
+wandb: Run data is saved locally in ./wandb/run-20250424_004721-kz76qq45
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run tf_efficientnet_b7.ns_jft_in1k
+wandb: ⭐️ View project at https://wandb.ai/834799106/SPH6004
+wandb: 🚀 View run at https://wandb.ai/834799106/SPH6004/runs/kz76qq45
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:654: Checkpoint directory /scratch/users/nus/e1373616/Group_work/ckpt exists and is not empty.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [GPU-7c579e25-824c-6368-a8a5-4734f95d30b7]
+
+   | Name                        | Type                 | Params | Mode 
+------------------------------------------------------------------------------
+0  | model                       | BaseModel            | 63.8 M | train
+1  | model.model                 | EfficientNet         | 63.8 M | train
+2  | model.model.conv_stem       | Conv2dSame           | 1.7 K  | train
+3  | model.model.bn1             | BatchNormAct2d       | 128    | train
+4  | model.model.blocks          | Sequential           | 62.1 M | train
+5  | model.model.conv_head       | Conv2d               | 1.6 M  | train
+6  | model.model.bn2             | BatchNormAct2d       | 5.1 K  | train
+7  | model.model.global_pool     | SelectAdaptivePool2d | 0      | train
+8  | model.model.classifier      | Identity             | 0      | train
+9  | model.head                  | Classifier           | 33.3 K | train
+10 | model.head.classifiers      | Linear               | 33.3 K | train
+11 | model.norm_layer            | Identity             | 0      | train
+12 | loss_module                 | BCEWithLogitsLoss    | 0      | train
+13 | loss_module.bce_with_logits | BCEWithLogitsLoss    | 0      | train
+14 | aucmetric                   | MultilabelAUROC      | 0      | train
+15 | multi_aucmetric             | MultilabelAUROC      | 0      | train
+16 | accmetric                   | MultilabelAccuracy   | 0      | train
+------------------------------------------------------------------------------
+63.8 M    Trainable params
+0         Non-trainable params
+63.8 M    Total params
+255.281   Total estimated model params size (MB)
+1114      Modules in train mode
+0         Modules in eval mode
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/utilities/data.py:79: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 64. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/utilities/data.py:79: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 17. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+Restoring states from the checkpoint path at ./ckpt/tf_efficientnet_b7.ns_jft_in1k-best_metric_model.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [GPU-7c579e25-824c-6368-a8a5-4734f95d30b7]
+Loaded model weights from the checkpoint at ./ckpt/tf_efficientnet_b7.ns_jft_in1k-best_metric_model.ckpt

@@ -1,3 +1,4 @@
+_base_: base.yaml
 dataset:
   name: "MIMIC_Img_Dataset"
   h5_file_path: 
@@ -12,21 +13,17 @@ dataset:
     train: "dataset/img_train_data.h5"
     val: "dataset/img_val_data.h5"
     test: "dataset/img_test_data.h5"
-dataloader:
-  batch_size: 64
-  num_workers: 16
+
 
 model:
-  name: "vit_base_patch16_siglip_gap_256.v2_webli" #"vit_base_patch8_224.augreg2_in21k_ft_in1k"
+  name: "vit_base_patch8_224.augreg2_in21k_ft_in1k" #"vit_so400m_patch14_siglip_224.v2_webli" #"vit_base_patch16_siglip_gap_224.v2_webli" #
   params:
     outnorm: false
     num_classes: 13
 
 train:
   label_smoothing: 0.0
-  epochs: 100
+  epochs: 50
   use_mixup: false
   
           
-optimizer:
-  lr: 0.0001

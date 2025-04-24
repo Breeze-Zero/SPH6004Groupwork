@@ -1,3 +1,4 @@
+_base_: base.yaml
 dataset:
   name: "ImageEmbDataset"
   h5_file_path: 
@@ -13,23 +14,15 @@ dataset:
     val: "dataset/img_val_data.h5"
     test: "dataset/img_test_data.h5"
 
-dataloader:
-  batch_size: 64
-  num_workers: 8
-
 model:
   name: "Linear"
   params:
     in_features: 1376
     num_features: 1376
-    outnorm: true
+    outnorm: false
     num_classes: 13
 
 train:
   label_smoothing: 0.0
-  epochs: 100
+  epochs: 50
   use_mixup: false
-  
-          
-optimizer:
-  lr: 0.0001

@@ -1,40 +1,62 @@
 Seed set to 42
+Using cache found in /home/users/nus/e1373616/.cache/torch/hub/facebookresearch_dinov2_main
+/home/users/nus/e1373616/.cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/swiglu_ffn.py:51: UserWarning: xFormers is not available (SwiGLU)
+  warnings.warn("xFormers is not available (SwiGLU)")
+/home/users/nus/e1373616/.cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/attention.py:33: UserWarning: xFormers is not available (Attention)
+  warnings.warn("xFormers is not available (Attention)")
+/home/users/nus/e1373616/.cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/block.py:40: UserWarning: xFormers is not available (Block)
+  warnings.warn("xFormers is not available (Block)")
+Using 16bit Automatic Mixed Precision (AMP)
 Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.model_summary.ModelSummary'>]. Skipping setting a default `ModelSummary` callback.
-GPU available: False, used: False
+GPU available: True (cuda), used: True
 TPU available: False, using: 0 TPU cores
 HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA A100-SXM4-40GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
 wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
 wandb: Currently logged in as: 834799106 to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: creating run
 wandb: Tracking run with wandb version 0.19.9
-wandb: Run data is saved locally in ./wandb/run-20250407_170206-l5dkcw3a
+wandb: Run data is saved locally in ./wandb/run-20250422_182033-2gva4dq3
 wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run MLP
+wandb: Syncing run img_text
 wandb: ⭐️ View project at https://wandb.ai/834799106/SPH6004
-wandb: 🚀 View run at https://wandb.ai/834799106/SPH6004/runs/l5dkcw3a
-/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:654: Checkpoint directory /projects/group/bliu/e1373616/sph6004/Group_work/ckpt exists and is not empty.
+wandb: 🚀 View run at https://wandb.ai/834799106/SPH6004/runs/2gva4dq3
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:654: Checkpoint directory /scratch/users/nus/e1373616/Group_work/ckpt exists and is not empty.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [GPU-5c077c91-81c1-5fcd-fe0c-e807c9154b50]
 
-   | Name                   | Type               | Params | Mode 
------------------------------------------------------------------------
-0  | model                  | BaseModel          | 15.2 M | train
-1  | model.model            | Mlp                | 15.2 M | train
-2  | model.model.fc1        | Linear             | 7.6 M  | train
-3  | model.model.act        | GELU               | 0      | train
-4  | model.model.fc2        | Linear             | 7.6 M  | train
-5  | model.model.drop       | Dropout            | 0      | train
-6  | model.head             | SeparateClassifier | 17.9 K | train
-7  | model.head.classifiers | ModuleList         | 17.9 K | train
-8  | model.norm_layer       | LayerNorm          | 2.8 K  | train
-9  | loss_module            | BCEWithLogitsLoss  | 0      | train
-10 | aucmetric              | MultilabelAUROC    | 0      | train
-11 | multi_aucmetric        | MultilabelAUROC    | 0      | train
-12 | accmetric              | MultilabelAccuracy | 0      | train
------------------------------------------------------------------------
-15.2 M    Trainable params
-0         Non-trainable params
-15.2 M    Total params
-60.698    Total estimated model params size (MB)
-26        Modules in train mode
-0         Modules in eval mode
-/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/utilities/data.py:78: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 64. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
-/home/e1373616/anaconda3/envs/med/lib/python3.10/site-packages/pytorch_lightning/utilities/data.py:78: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 17. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+   | Name                        | Type                  | Params | Mode 
+-------------------------------------------------------------------------------
+0  | model                       | Img_text_Model        | 209 M  | train
+1  | model.model                 | DinoVisionTransformer | 86.6 M | train
+2  | model.model.patch_embed     | PatchEmbed            | 452 K  | train
+3  | model.model.blocks          | ModuleList            | 85.1 M | train
+4  | model.model.norm            | LayerNorm             | 1.5 K  | train
+5  | model.model.head            | Identity              | 0      | train
+6  | model.nlp_model             | BertModel             | 109 M  | eval 
+7  | model.nlp_model.embeddings  | BertEmbeddings        | 23.8 M | eval 
+8  | model.nlp_model.encoder     | BertEncoder           | 85.1 M | eval 
+9  | model.nlp_model.pooler      | BertPooler            | 590 K  | eval 
+10 | model.text_norm             | LayerNorm             | 1.5 K  | train
+11 | model.mix_model             | FusionStack           | 13.4 M | train
+12 | model.mix_model.img_proj    | Linear                | 393 K  | train
+13 | model.mix_model.text_proj   | Linear                | 393 K  | train
+14 | model.mix_model.blocks      | ModuleList            | 12.6 M | train
+15 | model.head                  | Classifier            | 6.7 K  | train
+16 | model.head.classifiers      | Linear                | 6.7 K  | train
+17 | model.norm_layer            | Identity              | 0      | train
+18 | loss_module                 | BCEWithLogitsLoss     | 0      | train
+19 | loss_module.bce_with_logits | BCEWithLogitsLoss     | 0      | train
+20 | aucmetric                   | MultilabelAUROC       | 0      | train
+21 | multi_aucmetric             | MultilabelAUROC       | 0      | train
+22 | accmetric                   | MultilabelAccuracy    | 0      | train
+-------------------------------------------------------------------------------
+100.0 M   Trainable params
+109 M     Non-trainable params
+209 M     Total params
+837.880   Total estimated model params size (MB)
+265       Modules in train mode
+228       Modules in eval mode
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/utilities/data.py:79: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 64. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/pytorch_lightning/utilities/data.py:79: Trying to infer the `batch_size` from an ambiguous collection. The batch size we found is 17. To avoid any miscalculations, use `self.log(..., batch_size=batch_size)`.
+Restoring states from the checkpoint path at ./ckpt/img_text-best_metric_model.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [GPU-5c077c91-81c1-5fcd-fe0c-e807c9154b50]
+Loaded model weights from the checkpoint at ./ckpt/img_text-best_metric_model.ckpt

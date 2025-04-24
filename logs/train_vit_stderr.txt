@@ -1,0 +1,14 @@
+Seed set to 42
+Traceback (most recent call last):
+  File "/scratch/users/nus/e1373616/Group_work/train.py", line 247, in <module>
+    model = TorchModule(model_name, config['model']['params'], lr=config['optimizer']['lr'],label_smoothing=config['train']['label_smoothing'],use_mixup=config['train']['use_mixup'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/users/nus/e1373616/Group_work/train.py", line 37, in __init__
+    self.model = create_model(model_name, **model_hparams)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/users/nus/e1373616/Group_work/models/create_model.py", line 87, in create_model
+    backbone = timm.create_model(name, pretrained=pretrained, num_classes=0)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/users/nus/e1373616/anaconda3/lib/python3.12/site-packages/timm/models/_factory.py", line 122, in create_model
+    raise RuntimeError('Unknown model (%s)' % model_name)
+RuntimeError: Unknown model (vit)
