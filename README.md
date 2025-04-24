@@ -2,9 +2,9 @@
 
 ## ✨ Overview
 
-Welcome to the repository for Group 3's Project 2 for the SPH6004 module! This project focuses on [**Please add a brief, high-level description of your project's goal here. e.g., "analyzing medical images and text data for disease prediction"**].
+Welcome to the repository for Group 3's Project 2 for the SPH6004 module! This project focuses on MIMIC-CXR.
 
-We leverage state-of-the-art techniques in [**Mention key areas like Deep Learning, NLP, Image Analysis, etc.**] to build and evaluate models capable of [**Mention the specific task, e.g., "classifying patient conditions", "extracting clinical insights", etc.**].
+We leverage state-of-the-art techniques in Deep Learning, NLP, Image Analysis, etc. to build and evaluate models capable of extracting clinical insights.
 
 ## 📂 Code Structure
 
@@ -54,7 +54,7 @@ The project is organized as follows:
 ## 🚀 How to Run
 
 1.  **Data Preparation:**
-    *   [**Add instructions on how to obtain and place the necessary dataset(s) in the `dataset/` folder or how to run preprocessing scripts.**]
+
 
 2.  **Training:**
     *   To train the image embedding model:
@@ -69,7 +69,6 @@ The project is organized as follows:
         ```bash
         python train.py --config [path/to/main_config.yaml] # Example
         ```
-    *   [**Adjust the commands and add specific config file names/paths as needed.**]
     *   Training logs will be saved in `logs/` and `lightning_logs/`.
 
 3.  **Evaluation:**
@@ -77,7 +76,6 @@ The project is organized as follows:
         ```bash
         python eval.py --checkpoint models/[your_model_checkpoint.ckpt] --data [path/to/test_data] # Example
         ```
-    *   [**Adjust command as needed based on `eval.py` arguments.**]
     *   Results will be stored in the `result/` directory.
 
 4.  **Testing/Inference:**
@@ -85,15 +83,8 @@ The project is organized as follows:
         ```bash
         python test.py --checkpoint models/[your_model_checkpoint.ckpt] --input [path/to/input_data] # Example
         ```
-    *   [**Adjust command as needed based on `test.py` arguments.**]
 
-## 📊 Results
 
-[**Summarize the key findings and performance metrics of your models here. You can include tables or links to result files in the `result/` directory.**]
-
-*   Model A achieved X accuracy on the test set.
-*   Model B showed promising results in Y task.
-*   Refer to `result/summary.csv` for detailed metrics.
 
 ## 🧑‍💻 Team - Group 3
 
@@ -103,5 +94,3 @@ The project is organized as follows:
 *   SPH6004 Teaching Team
 
 ---
-
-*This README was generated with assistance from an AI Pair Programmer.* 
